@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -32,15 +36,32 @@ export class UsersService {
     return await query.getMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    const user = await this.userRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new NotFoundException(`کاربر ${id} پیدا نشد!`);
+    }
+
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    try {
+      await this.userRepository.update(id, {
+        display_name: updateUserDto.display_name,
+        role: updateUserDto.role,
+      });
+      return this.findOne(id);
+    } catch {
+      throw new BadRequestException('هنگام بروزرسانی خطایی رخ داد!');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const result = await this.userRepository.delete(id);
+    if (result.affected === 0) {
+      return new NotFoundException(`کاربر ${id} پیدا نشد!`);
+    }
   }
 }
