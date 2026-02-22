@@ -5,10 +5,12 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
+    // Config
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
+    // DB Connection
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
@@ -21,6 +23,7 @@ import { UsersModule } from './users/users.module';
       entities: [__dirname + '/**/entities/*.entity{.ts,.js}'],
     }),
 
+    // Modules
     UsersModule,
   ],
 })
