@@ -13,7 +13,7 @@ export class CreateUserDto {
   @IsString({ message: 'شماره موبایل باید یک رشته باشد' })
   @Length(11, 11, { message: 'شماره موبایل باید 11 رقم باشد' })
   @IsNotEmpty({ message: 'شماره موبایل نمیتواند خالی باشد' })
-  //   @Matches('/^.{11}$/', { message: 'شماره موبایل باید 11 رقم باشد' })
+  //   @Matches(/^.{11}$/, { message: 'شماره موبایل باید 11 رقم باشد' })
   @Transform(({ value }: { value: string }) => value.trim())
   mobile: string;
 
